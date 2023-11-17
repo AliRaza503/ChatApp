@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Chat</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="onboarding_text">Connect friends easily &amp; quickly</string>
+    <string name="onBoarding_subtext">Our app is a perfect way to stay connected with friends and family.</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="login">Login</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome!"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="login_screen_title">Login to the app</string>
+    <string name="login_screen_subtitle">Lorem ipsum Text It is just to demonstrate the subheading.\n</string>
+    <string name="sign_up">Sign up</string>
+    <string name="navigate_up">Navigate Up</string>
+    <string name="sign_up_screen_title">Sign up with Email</string>
+    <string name="create_an_account">Create an Account</string>
+</resources>
