@@ -1,4 +1,4 @@
-package com.example.chat.ui.home
+package com.example.chat.ui.main
 
 import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView

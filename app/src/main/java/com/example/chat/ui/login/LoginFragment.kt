@@ -1,19 +1,30 @@
 package com.example.chat.ui.login
 
+import android.app.Activity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import com.example.chat.auth.FacebookAuthentication
+import com.example.chat.auth.GoogleAuthentication
 import com.example.chat.databinding.FragmentLoginBinding
+import com.facebook.AccessToken
+import com.facebook.CallbackManager
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
 
 
 class LoginFragment : Fragment() {
@@ -25,21 +36,92 @@ class LoginFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    private lateinit var callbackManager: CallbackManager
+    private lateinit var facebookAuth: FacebookAuthentication
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
+        isUserSignedIn()
+        val googleAuth =
+            GoogleAuthentication(
+                registerForActivityResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                    if (result.resultCode == Activity.RESULT_OK) {
+                        val task: Task<GoogleSignInAccount> =
+                            GoogleSignIn.getSignedInAccountFromIntent(
+                                result.data
+                            )
+                        handleGoogleAuthResult(task)
+                    }
+                },
+                context = requireActivity()
+            )
+        binding.oAuthContainerLayout.btnGoogleOAuth.setOnClickListener {
+            googleAuth.authenticate()
+        }
+        // Facebook Login
+        callbackManager = CallbackManager.Factory.create()
+        facebookAuth = FacebookAuthentication(
+            fragment = this,
+            callbackManager = callbackManager,
+            onSuccess = { token ->
+                Log.d("TAG", "onSuccess: $token")
+            },
+            onCancel = {
+                // Handle onCancel logic
+            },
+            onError = { error ->
+                // Handle onError logic
+            }
+        )
+        facebookAuth.registerCallback()
+
+        binding.oAuthContainerLayout.btnFb.setOnClickListener {
+            facebookAuth.authenticate()
+        }
+
         return binding.root
 
     }
 
+    private fun isUserSignedIn() {
+        // Check if user is already logged in using Google
+        val account = GoogleSignIn.getLastSignedInAccount(requireContext())
+        if (account != null && !account.isExpired) {
+            // TODO: Navigate to HomeActivity
+        }
+        // Check if user is already logged in using Facebook
+        val accessToken = AccessToken.getCurrentAccessToken()
+        if (accessToken != null && !accessToken.isExpired) {
+            // TODO: Navigate to HomeActivity
+            Log.d("TAG", "onCreateView: ${accessToken.token}")
+        }
+    }
+
+    private fun handleGoogleAuthResult(task: Task<GoogleSignInAccount>) {
+        try {
+            val account: GoogleSignInAccount? = task.getResult(
+                ApiException::class.java
+            )
+            if (account != null) {
+                // Signed in successfully, show authenticated UI.
+                // updateUI(account)
+                Log.d("TAG", "handleSignInResult: ${account.email}")
+            }
+        } catch (e: ApiException) {
+            // The ApiException status code indicates the detailed failure reason.
+            // Please refer to the GoogleSignInStatusCodes class reference for more information.
+            // Log.w(TAG, "signInResult:failed code=" + e.statusCode)
+            // updateUI(null)
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
-            .get(LoginViewModel::class.java)
+        loginViewModel = ViewModelProvider(this, LoginViewModelFactory())[LoginViewModel::class.java]
 
         val usernameEditText = binding.emailET
         val passwordEditText = binding.passwordET
@@ -48,12 +130,13 @@ class LoginFragment : Fragment() {
 
         // navigate up click listener
         binding.navigateUp.setOnClickListener {
-             binding.root.findNavController().navigateUp()
+            binding.root.findNavController().navigateUp()
         }
 
         // navigate to register fragment
         binding.btnSignup.setOnClickListener {
-            binding.root.findNavController().navigate(com.example.chat.R.id.action_loginFragment_to_signupFragment)
+            binding.root.findNavController()
+                .navigate(com.example.chat.R.id.action_loginFragment_to_signupFragment)
         }
 
         loginViewModel.loginFormState.observe(viewLifecycleOwner,
