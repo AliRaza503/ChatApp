@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:padding="10dp"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/round_image_container"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:cardCornerRadius="200dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/round_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:scaleType="fitXY"
+            app:srcCompat="@mipmap/ic_launcher" />
+    </com.google.android.material.card.MaterialCardView>
+
+
+    <TextView
+        android:id="@+id/username_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/poppins_semi_bold"
+        android:textSize="20sp"
+        app:layout_constraintStart_toEndOf="@id/round_image_container"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Your Username" />
+
+    <TextView
+        android:id="@+id/message_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@id/username_tv"
+        app:layout_constraintTop_toBottomOf="@id/username_tv"
+        tools:text="Your Message" />
+
+    <TextView
+        android:id="@+id/message_time_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_light"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="2 min ago" />
+
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/new_messages_count_tv"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        app:layout_constraintEnd_toEndOf="@id/message_time_tv"
+        app:layout_constraintStart_toStartOf="@id/message_time_tv"
+        app:layout_constraintTop_toBottomOf="@id/message_time_tv"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="2"
+        android:background="@drawable/round_image"
+        android:textColor="@color/white"
+        android:gravity="center"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

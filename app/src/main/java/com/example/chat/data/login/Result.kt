@@ -1,4 +1,4 @@
-package com.example.chat.data
+package com.example.chat.data.login
 
 /**
  * A generic class that holds a value with its loading status.

@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import android.util.Patterns
-import com.example.chat.data.LoginRepository
-import com.example.chat.data.Result
+import com.example.chat.data.login.LoginRepository
+import com.example.chat.data.login.Result
 
 import com.example.chat.R
 

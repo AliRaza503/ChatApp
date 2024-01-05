@@ -2,8 +2,8 @@ package com.example.chat.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.chat.data.LoginDataSource
-import com.example.chat.data.LoginRepository
+import com.example.chat.data.login.LoginDataSource
+import com.example.chat.data.login.LoginRepository
 
 /**
  * ViewModel provider factory to instantiate LoginViewModel.

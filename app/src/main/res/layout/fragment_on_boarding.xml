@@ -5,16 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/ThemeOverlay.Chat.FullscreenContainer"
-    tools:context=".OnBoarding.OnBoarding">
+    tools:context=".onBoarding.OnBoarding">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/appCompatImageView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/screen_bg"
         android:cropToPadding="true"
+        android:elevation="0dp"
+        android:background="@color/screen_bg"
         android:scaleType="fitXY"
-        android:src="@drawable/onboarding"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -22,7 +22,9 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.5"
         app:srcCompat="@drawable/onboarding" />
+
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -31,14 +33,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.5">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.google.android.material.circularreveal.cardview.CircularRevealCardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/app_ic_container"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_marginTop="60dp"
                 app:cardCornerRadius="40dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -47,27 +50,21 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:importantForAccessibility="no"
-                    app:srcCompat="@drawable/ic_launcher_background" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:importantForAccessibility="no"
-                    app:srcCompat="@drawable/ic_launcher_foreground" />
-            </com.google.android.material.circularreveal.cardview.CircularRevealCardView>
+                    app:srcCompat="@mipmap/ic_launcher"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY" />
+            </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/onBoardingText"
+                style="@style/TextAppearance.MaterialComponents.Headline2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="24dp"
                 android:layout_marginVertical="10dp"
                 android:text="@string/onboarding_text"
                 android:textColor="@color/white"
-                style="@style/TextAppearance.MaterialComponents.Headline2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -99,7 +96,8 @@
                 app:layout_constraintTop_toBottomOf="@id/onBoardingSubText">
 
                 <include
-                    layout="@layout/oauth_controllers_layout"/>
+                    android:id="@+id/oAuthContainerLayout"
+                    layout="@layout/oauth_controllers_layout" />
             </FrameLayout>
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -116,11 +114,11 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSignupWithEmail"
                 android:layout_width="320dp"
-                android:layout_height="48dp"
+                android:layout_height="60dp"
                 android:layout_marginVertical="30dp"
                 android:text="Signup with an email"
-                app:cornerRadius="16dp"
                 android:textAllCaps="false"
+                app:cornerRadius="24dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -130,12 +128,12 @@
                 android:id="@+id/isExistingAccount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
                 android:layout_marginVertical="30dp"
+                android:layout_marginEnd="20dp"
                 android:text="Existing Account? "
                 android:textColor="@color/subheading_text_color"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/btnSignupWithEmail" />
 
@@ -143,14 +141,14 @@
                 android:id="@+id/btnLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
                 android:layout_marginVertical="30dp"
+                android:layout_marginStart="2dp"
                 android:layout_marginEnd="100dp"
                 android:text="@string/login"
                 android:textColor="@color/light_blue_600"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/isExistingAccount"
-                app:layout_constraintTop_toBottomOf="@id/btnSignupWithEmail"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintTop_toBottomOf="@id/btnSignupWithEmail" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

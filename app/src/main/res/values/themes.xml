@@ -7,7 +7,9 @@
         <item name="colorPrimary">@color/light_blue_A400</item>
     </style>
 
-    <style name="Theme.Chat" parent="Base.Theme.Chat" />
+    <style name="Theme.Chat" parent="Base.Theme.Chat">
+        <item name="android:fontFamily">@font/poppins_regular</item>
+    </style>
 
     <style name="ThemeOverlay.Chat.FullscreenContainer" parent="">
         <item name="fullscreenBackgroundColor">@color/light_blue_600</item>

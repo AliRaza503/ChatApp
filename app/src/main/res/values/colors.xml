@@ -11,4 +11,7 @@
     <color name="subheading_text_color">#B9C1BE</color>
     <color name="screen_bg">#1A1A1A</color>
     <color name="red">#E01809</color>
+    <color name="opaque_blue">#80039BE5</color>
+    <color name="ic_navigation_tint">#D7E2FF</color>
+    <color name="color_on_surface">#2F4156</color>
 </resources>
