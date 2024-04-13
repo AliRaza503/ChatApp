@@ -31,6 +31,11 @@
     <string name="facebook_app_id">3117595991706235</string>
     <string name="fb_login_protocol_scheme">fb3117595991706235</string>
     <string name="facebook_client_token">2b7e574fce2eeeebacac3889aafd2686</string>
+    <string name="google_auth_web_clientid">627212615324-8j8l41kl4oo7hrno075hc3afume3rlkh.apps.googleusercontent.com</string>
+    <string name="google_auth_nonce">lnkEsauRWC/KPXSvj/ERcAt048DzxIZG</string>
     <string name="empty_string" />
+    <string name="google_auth_token">Google Authentication Token</string>
+    <string name="type_a_message">Enter Message</string>
+
 
 </resources>

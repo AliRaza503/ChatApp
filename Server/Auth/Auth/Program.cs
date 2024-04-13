@@ -1,4 +1,5 @@
 using System.Text;
+using Auth.Controllers.Temp;
 using Auth.Models;
 using Auth.Services.Authenticators;
 using Auth.Services.PasswordHashers;
@@ -41,6 +42,9 @@ builder.Services.AddSingleton<IPasswordHasher, BCryptPasswordHasher>();
 builder.Services.AddSingleton<IUserRepository, UserRepository>();
 builder.Services.AddSingleton<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddSingleton<Authenticator>();
+
+builder.Services.AddSingleton<ICounter, Counter>();
+
 // // Db Context
 // builder.Services.AddDbContext<AuthenticationDbContext>(options =>
 // {

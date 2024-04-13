@@ -1,6 +1,6 @@
 package com.example.chat.ui.login
 
-import android.app.Activity
+import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,21 +10,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
+import com.example.chat.MainActivity
+import com.example.chat.R
 import com.example.chat.auth.FacebookAuthentication
-import com.example.chat.auth.GoogleAuthentication
+import com.example.chat.auth.google.GoogleAuthenticator
+import com.example.chat.auth.google.getUserFromTokenId
 import com.example.chat.databinding.FragmentLoginBinding
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.Task
+import kotlinx.coroutines.launch
 
 
 class LoginFragment : Fragment() {
@@ -38,6 +39,7 @@ class LoginFragment : Fragment() {
 
     private lateinit var callbackManager: CallbackManager
     private lateinit var facebookAuth: FacebookAuthentication
+    private lateinit var googleAuthenticator: GoogleAuthenticator
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,23 +47,30 @@ class LoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
+        googleAuthenticator = GoogleAuthenticator(
+            context = requireContext(),
+            clientId = getString(R.string.google_auth_web_clientid),
+            nonce = getString(R.string.google_auth_nonce),
+            rememberAccount = false
+        )
         isUserSignedIn()
-        val googleAuth =
-            GoogleAuthentication(
-                registerForActivityResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                    if (result.resultCode == Activity.RESULT_OK) {
-                        val task: Task<GoogleSignInAccount> =
-                            GoogleSignIn.getSignedInAccountFromIntent(
-                                result.data
-                            )
-                        handleGoogleAuthResult(task)
-                    }
-                },
-                context = requireActivity()
-            )
+
+        // Google Login
         binding.oAuthContainerLayout.btnGoogleOAuth.setOnClickListener {
-            googleAuth.authenticate()
+            googleAuthenticator.login(
+                onTokenIdReceived = { tokenId ->
+                    Log.d("TAG", "onCreateView: $tokenId")
+                    getUserFromTokenId(tokenId)?.let { user ->
+                        Log.d("TAG", "onCreateView: $user ${user.expirationTime}")
+                    }
+                    saveTokenToSharedPrefs(tokenId)
+                },
+                onDialogDismissed = { message ->
+                    Log.d("TAG", "onCreateView: $message")
+                }
+            )
         }
+
         // Facebook Login
         callbackManager = CallbackManager.Factory.create()
         facebookAuth = FacebookAuthentication(
@@ -87,11 +96,23 @@ class LoginFragment : Fragment() {
 
     }
 
+    private fun saveTokenToSharedPrefs(tokenId: String) {
+        // Save the token to shared preferences
+        val sharedPref = requireActivity().getPreferences(MODE_PRIVATE) ?: return
+        with(sharedPref.edit()) {
+            putString(getString(R.string.google_auth_token), tokenId)
+            apply()
+        }
+    }
+
     private fun isUserSignedIn() {
         // Check if user is already logged in using Google
-        val account = GoogleSignIn.getLastSignedInAccount(requireContext())
-        if (account != null && !account.isExpired) {
-            // TODO: Navigate to HomeActivity
+        lifecycleScope.launch {
+            val bundle = googleAuthenticator.isUserSignedIn()
+            if (bundle?.isEmpty == false) {
+                // TODO: Navigate to HomeActivity
+                Log.d("TAG", "onCreateView: $bundle")
+            }
         }
         // Check if user is already logged in using Facebook
         val accessToken = AccessToken.getCurrentAccessToken()
@@ -101,27 +122,10 @@ class LoginFragment : Fragment() {
         }
     }
 
-    private fun handleGoogleAuthResult(task: Task<GoogleSignInAccount>) {
-        try {
-            val account: GoogleSignInAccount? = task.getResult(
-                ApiException::class.java
-            )
-            if (account != null) {
-                // Signed in successfully, show authenticated UI.
-                // updateUI(account)
-                Log.d("TAG", "handleSignInResult: ${account.email}")
-            }
-        } catch (e: ApiException) {
-            // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            // Log.w(TAG, "signInResult:failed code=" + e.statusCode)
-            // updateUI(null)
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loginViewModel = ViewModelProvider(this, LoginViewModelFactory())[LoginViewModel::class.java]
+        loginViewModel =
+            ViewModelProvider(this, LoginViewModelFactory())[LoginViewModel::class.java]
 
         val usernameEditText = binding.emailET
         val passwordEditText = binding.passwordET
@@ -136,7 +140,7 @@ class LoginFragment : Fragment() {
         // navigate to register fragment
         binding.btnSignup.setOnClickListener {
             binding.root.findNavController()
-                .navigate(com.example.chat.R.id.action_loginFragment_to_signupFragment)
+                .navigate(LoginFragmentDirections.actionLoginFragmentToSignupFragment())
         }
 
         loginViewModel.loginFormState.observe(viewLifecycleOwner,
@@ -157,11 +161,13 @@ class LoginFragment : Fragment() {
             Observer { loginResult ->
                 loginResult ?: return@Observer
                 loadingProgressBar.visibility = View.GONE
-                loginResult.error?.let {
-                    showLoginFailed(it)
-                }
-                loginResult.success?.let {
-                    updateUiWithUser(it)
+                Log.d("TAG", "onViewCreated: $loginResult")
+                if (loginResult.accessToken != "") {
+                    MainActivity.JWT.value = loginResult.accessToken
+                    MainActivity.email = loginResult.loggedInUser?.email ?: ""
+                    MainActivity.userName = loginResult.loggedInUser?.displayName ?: ""
+                    MainActivity.connection.start()
+                    findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToMobileNavigation())
                 }
             })
 

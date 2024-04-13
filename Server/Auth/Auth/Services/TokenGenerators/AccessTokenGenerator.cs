@@ -1,6 +1,5 @@
 using System.Security.Claims;
 using Auth.Models;
-using Auth.Models;
 
 namespace Auth.Services.TokenGenerators;
 

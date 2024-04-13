@@ -45,15 +45,13 @@
             app:layout_constraintTop_toBottomOf="@id/navigate_up" />
 
         <com.google.android.material.divider.MaterialDivider
-            android:layout_width="43dp"
+            android:layout_width="45dp"
             android:layout_height="10dp"
-            android:layout_marginStart="-84dp"
-            android:layout_marginTop="58dp"
-            app:dividerColor="@color/opaque_blue"
-            app:layout_constraintEnd_toEndOf="@id/title_to_login"
-            app:layout_constraintHorizontal_bias="0.5"
+            android:layout_marginStart="98dp"
+            android:layout_marginTop="-10dp"
             app:layout_constraintStart_toStartOf="@id/title_to_login"
-            app:layout_constraintTop_toBottomOf="@+id/navigate_up" />
+            app:dividerColor="@color/opaque_blue"
+            app:layout_constraintTop_toBottomOf="@id/title_to_login"/>
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/subtitle_login"
@@ -114,6 +112,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Email"
+                android:text="user@example.com"
                 android:inputType="textEmailAddress"
                 android:textColor="@color/subheading_text_color"
                 android:textColorHint="@color/light_blue_600"
@@ -143,6 +142,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_password"
                 android:imeActionLabel="@string/action_sign_in_short"
+                android:text="string"
                 android:imeOptions="actionDone"
                 android:inputType="textPassword"
                 android:selectAllOnFocus="true"

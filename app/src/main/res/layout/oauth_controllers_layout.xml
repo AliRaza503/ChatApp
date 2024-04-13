@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/oAuthContainerlkjhlkjh"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -47,9 +46,9 @@
         android:src="@drawable/google_ic" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/btnAppleOAuth"
+        android:id="@+id/btnMicrosoftOAuth"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_weight="1"
-        android:src="@drawable/apple_ic" />
+        android:src="@drawable/microsoft_ic" />
 </androidx.appcompat.widget.LinearLayoutCompat>

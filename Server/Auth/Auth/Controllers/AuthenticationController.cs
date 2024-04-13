@@ -124,5 +124,42 @@ namespace Auth.Controllers
             IEnumerable<string> errorMessages = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage));
             return BadRequest(new ErrorResponse(errorMessages));
         }
+        
+        [HttpGet("gett")]
+        public IActionResult Get()
+        {
+            var users = _userRepository.GetAll();
+            return Ok(users);
+        }
+        
+        [HttpGet("get")]
+        public async Task<IActionResult> Get([FromQuery]int id)
+        {
+            var user = await _userRepository.GetUserByInt(id);
+            if (user == null)
+            {
+                return NotFound(new ErrorResponse("User not found"));
+            }
+            return Ok(user);
+        }
+        
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> Update(Guid id, [FromBody] RegisterRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequestModelState();
+            }
+            var user = await _userRepository.GetUserById(id);
+            if (user == null)
+            {
+                return NotFound(new ErrorResponse("User not found"));
+            }
+            user.Email = request.Email;
+            user.Username = request.Username;
+            user.PasswordHash = _passwordHasher.HashPassword(request.Password);
+            await _userRepository.Update(user);
+            return Ok(user);
+        }
     }
 }

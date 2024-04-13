@@ -1,18 +1,17 @@
 package com.example.chat.onBoarding
 
-import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.example.chat.R
 import com.example.chat.auth.FacebookAuthentication
-import com.example.chat.auth.GoogleAuthentication
+import com.example.chat.auth.google.GoogleAuthenticator
+import com.example.chat.auth.google.getUserFromTokenId
 import com.example.chat.databinding.FragmentOnBoardingBinding
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
@@ -40,23 +39,44 @@ class OnBoarding : Fragment() {
     ): View {
         _binding = FragmentOnBoardingBinding.inflate(inflater, container, false)
 
+        val googleAuthenticator = GoogleAuthenticator(
+            context = requireContext(),
+            clientId = getString(R.string.google_auth_web_clientid),
+            nonce = getString(R.string.google_auth_nonce),
+            rememberAccount = false
+        )
         isUserSignedIn()
 
-        val googleAuth =
-            GoogleAuthentication(
-                registerForActivityResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                    if (result.resultCode == Activity.RESULT_OK) {
-                        val task: Task<GoogleSignInAccount> =
-                            GoogleSignIn.getSignedInAccountFromIntent(
-                                result.data
-                            )
-                        handleGoogleAuthResult(task)
+//        val googleAuth =
+//            GoogleAuthentication(
+//                registerForActivityResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+//                    if (result.resultCode == Activity.RESULT_OK) {
+//                        val task: Task<GoogleSignInAccount> =
+//                            GoogleSignIn.getSignedInAccountFromIntent(
+//                                result.data
+//                            )
+//                        handleGoogleAuthResult(task)
+//                    }
+//                },
+//                context = requireActivity()
+//            )
+//        binding.oAuthContainerLayout.btnGoogleOAuth.setOnClickListener {
+//            googleAuth.authenticate()
+//        }
+
+        // Google Login
+        binding.oAuthContainerLayout.btnGoogleOAuth.setOnClickListener {
+            googleAuthenticator.login(
+                onTokenIdReceived = { tokenId ->
+                    Log.d("TAG", "onCreateView: $tokenId")
+                    getUserFromTokenId(tokenId)?.let { user ->
+                        Log.d("TAG", "onCreateView: $user ${user.expirationTime}")
                     }
                 },
-                context = requireActivity()
+                onDialogDismissed = { message ->
+                    Log.d("TAG", "onCreateView: $message")
+                }
             )
-        binding.oAuthContainerLayout.btnGoogleOAuth.setOnClickListener {
-            googleAuth.authenticate()
         }
 
         // Facebook Login
@@ -88,6 +108,7 @@ class OnBoarding : Fragment() {
         val account = GoogleSignIn.getLastSignedInAccount(requireContext())
         if (account != null && !account.isExpired) {
             // TODO: Navigate to HomeActivity
+            Log.d("TAG", "onCreateView: ${account.email}")
         }
         // Check if user is already logged in using Facebook
         val accessToken = AccessToken.getCurrentAccessToken()

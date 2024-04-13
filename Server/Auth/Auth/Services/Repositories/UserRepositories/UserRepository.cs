@@ -20,4 +20,27 @@ public class UserRepository : IUserRepository
         _users.Add(user);
         return Task.FromResult(user);
     }
+
+    public List<User> GetAll()
+    {
+        return _users;
+    }
+
+    public Task<User> Update(User user)
+    {
+        var index = _users.FindIndex(u => u.Id == user.Id);
+        _users[index] = user;
+        return Task.FromResult(user);
+    }
+
+    public Task<User> GetUserByInt(int index)
+    {
+        if (_users.Count > index)
+        {
+            return Task.FromResult(_users[index]);
+        }
+        
+        return Task.FromResult(_users[0]);
+        
+    }
 }
